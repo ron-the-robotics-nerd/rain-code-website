@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nics 90s Space</title>
+    <style>
+        body {
+            background-color: #c0c0c0;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            color: #000080;
+        }
+        .container {
+            width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 2px solid #000080;
+            background-color: #ffffff;
+        }
+        .navbar {
+            background-color: #ffcc00;
+            padding: 10px;
+            text-align: center;
+        }
+        .navbar a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #000080;
+            font-weight: bold;
+        }
+        .section {
+            margin: 20px 0;
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        .chat-box {
+            width: 100%;
+            height: 200px;
+            border: 1px solid #000080;
+            background-color: #f0f0f0;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+        }
+        .chat-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #000080;
+        }
+        .video-player {
+            width: 100%;
+            height: 200px;
+            margin-top: 20px;
+            border: 1px solid #000080;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <a href="#about" class="tab">About Me</a>
+            <a href="#updates" class="tab">Updates</a>
+            <a href="#chat" class="tab">Chat</a>
+            <a href="#admin" class="tab">Admin</a> <!-- Admin tab added -->
+        </div>
+
+        <div id="about" class="section active">
+            <h2>About Me</h2>
+            <p>Hi, I'm a 14-year-old tech enthusiast. I love exploring new technologies, coding, and playing around with gadgets. Welcome to my 90s styled webpage!</p>
+            <div id="aboutVideo" class="video-player" style="display:none;">
+                <iframe width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <div id="updates" class="section">
+            <h2>Updates</h2>
+            <p>Here you will find the latest updates about my projects and interests.</p>
+            <ul id="updatesList"> <!-- added an id for easier access -->
+                <li>this is the start of my updates, nothing to see here`</li>
+            </ul>
+            <div id="updatesVideo" class="video-player" style="display:none;">
+                <iframe width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <div id="chat" class="section">
+            <h2>Chat with Me</h2>
+            <div class="chat-box" id="chatBox">
+                <!-- Chat messages will appear here -->
+            </div>
+            <input type="text" class="chat-input" id="chatInput" placeholder="Type a message and press Enter...">
+        </div>
+
+        <div id="admin" class="section">
+            <h2>Admin Panel</h2>
+            <p>Enter the admin code to unlock commands.</p>
+            <input type="password" class="chat-input" id="adminCodeInput" placeholder="Enter admin code...">
+            <button id="unlockAdminBtn">Unlock</button>
+            <div id="adminCommands" style="display:none;">
+                <p>Enter commands to manage the webpage.</p>
+                <input type="text" class="chat-input" id="adminInput" placeholder="Enter admin command...">
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2024 My 90s Style Webpage
+    </footer>
+
+    <script>
+        const tabs = document.querySelectorAll('.tab');
+        const sections = document.querySelectorAll('.section');
+        const adminCodeInput = document.getElementById('adminCodeInput');
+        const unlockAdminBtn = document.getElementById('unlockAdminBtn');
+        const adminCommands = document.getElementById('adminCommands');
+        const adminInput = document.getElementById('adminInput');
+        const updatesList = document.getElementById('updatesList');
+        const chatBox = document.getElementById('chatBox');
+        const chatInput = document.getElementById('chatInput');
+        const aboutVideo = document.getElementById('aboutVideo');
+        const updatesVideo = document.getElementById('updatesVideo');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function () {
+                const targetId = this.getAttribute('href').substr(1);
+                sections.forEach(section => {
+                    if (section.id === targetId) {
+                        section.classList.add('active');
+                    } else {
+                        section.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        unlockAdminBtn.addEventListener('click', function () {
+            const adminCode = adminCodeInput.value.trim();
+            if (adminCode === '13645_ADMN') {
+                adminCommands.style.display = 'block';
+                adminCodeInput.style.display = 'none';
+                unlockAdminBtn.style.display = 'none';
+            } else {
+                alert('Invalid admin code.');
+            }
+        });
+
+        adminInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                const command = adminInput.value.trim();
+                handleAdminCommand(command);
+                adminInput.value = '';
+            }
+        });
+
+        chatInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                const message = chatInput.value.trim();
+                if (message) {
+                    const newMessage = document.createElement('div');
+                    newMessage.textContent = message;
+                    chatBox.appendChild(newMessage);
+                    chatInput.value = '';
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
+            }
+        });
+
+        function handleAdminCommand(command) {
+            const colonIndex = command.indexOf(':');
+            if (colonIndex !== -1) {
+                const action = command.substring(0, colonIndex).toLowerCase();
+                const params = command.substring(colonIndex + 1).trim();
+                switch (action) {
+                    case 'updates\\text':
+                        addUpdate(params);
+                        break;
+                    case 'abt_me\\updt\\text':
+                        updateAboutMe(params);
+                        break;
+                    case 'cht\\pause':
+                        pauseChat(params);
+                        break;
+                    case 'updates\\attach_video':
+                        attachVideo('updatesVideo', params);
+                        break;
+                    case 'abt_me\\attach_video':
+                        attachVideo('aboutVideo', params);
+                        break;
+                    default:
+                        alert('Invalid admin command.');
+                }
+            } else {
+                alert('Invalid admin command.');
+            }
+        }
+
+        function addUpdate(text) {
+            const newUpdate = document.createElement('li');
+            newUpdate.textContent = text;
+            updatesList.appendChild(newUpdate);
+        }
+
+        function updateAboutMe(text) {
+            const aboutMeSection = document.getElementById('about');
+            const aboutMeParagraph = aboutMeSection.querySelector('p');
+            aboutMeParagraph.textContent = text;
+        }
+
+        function pauseChat(time) {
+            chatInput.disabled = true;
+            setTimeout(() => {
+                chatInput.disabled = false;
+            }, parseInt(time) * 1000);
+        }
+
+        function attachVideo(targetId, url) {
+            const videoSection = document.getElementById(targetId);
+            const iframe = videoSection.querySelector('iframe');
+            const embedUrl = convertToEmbedUrl(url);
+            if (embedUrl) {
+                iframe.src = embedUrl;
+                videoSection.style.display = 'block';
+            } else {
+                alert('Invalid YouTube URL');
+            }
+        }
+
+        function convertToEmbedUrl(url) {
+            const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+            const match = url.match(youtubeRegex);
+            if (match && match[1]) {
+                return `https://www.youtube.com/embed/${match[1]}`;
+            } else {
+                return null;
+            }
+        }
+    </script>
+</body>
+</html>
